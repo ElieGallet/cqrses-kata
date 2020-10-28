@@ -1,0 +1,9 @@
+enum UserAction {
+  TAKE_POSITION = 1,
+  COMPLETE_PORTFOLIO = 2,
+  MOVE_POSITION_TO_PORTFOLIO = 3,
+  GET_POSITION_LIST = 4,
+  GET_PORTFOLIO_LIST = 5,
+  GET_PORTFOLIO_DETAILS = 6,
+}
+export default UserAction;
