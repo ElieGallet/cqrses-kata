@@ -1,1 +1,3 @@
-export default class PortfoliosAggregateRoot {};
+export default class PortfoliosAggregateRoot {
+
+};
