@@ -1,13 +1,13 @@
-import SourcedEvent from '../interface/SourcedEvent';
+import DomainEvent from '../interface/DomainEvent';
 
 export default class EventBus {
-  private events: SourcedEvent[];
+  private events: DomainEvent[];
 
   public constructor(){
     this.events = [];
   }
 
-  public addEvent(event: SourcedEvent): void{
+  public addEvent(event: DomainEvent): void{
     this.events.push(event);
   }
   public process(): void{

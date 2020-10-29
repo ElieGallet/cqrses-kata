@@ -4,7 +4,7 @@ import GetTotalPositionTakenQuery from "../../../core/domain/query/GetTotalPosit
 import GetPortfolioListQuery from "../../../core/domain/query/GetPortfolioListQuery";
 import GetPortfolioDetailsQuery from "../../../core/domain/query/GetPortfolioDetailsQuery";
 
-import CommandPublisher from "../../bus/CommandBus";
+import CommandPublisher from "../../publisher/CommandBus";
 import QueryService from "../../../core/service/QueryService";
 import UserAction from "../../enum/UserAction";
 

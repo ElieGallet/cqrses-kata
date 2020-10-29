@@ -1,5 +1,5 @@
 import Command from "../../../infra/interface/Command";
-import SourcedEvent from "../../../infra/interface/SourcedEvent";
+import DomainEvent from "../../../infra/interface/DomainEvent";
 import PositionMovedFromOnePortfolioToAnotherEvent from "../event/PositionMovedFromOnePortfolioToAnotherEvent";
 
 export default class MovesPositionFromOnePortfolioToAnotherCommand implements Command{
@@ -14,7 +14,7 @@ export default class MovesPositionFromOnePortfolioToAnotherCommand implements Co
     this.portfolioDestinationName = portfolioDestinationName;
   }
 
-   public handle(): SourcedEvent[]{
+   public handle(): DomainEvent[]{
     return [
       new PositionMovedFromOnePortfolioToAnotherEvent(this.positionQuantity, this.portfolioSourceName, this.portfolioDestinationName),
     ];

@@ -1,6 +1,6 @@
 import {v4 as uuid} from 'uuid';
 import { LocalStorage } from "node-localstorage";
-import SourcedEvent from "../../interface/SourcedEvent";
+import DomainEvent from "../../interface/DomainEvent";
 
 export default class EventStoreAdapter {
 
@@ -14,19 +14,19 @@ export default class EventStoreAdapter {
     }
   }
 
-  public storeEvent (event: SourcedEvent): void {
+  public storeEvent (event: DomainEvent): void {
     this.eventStore.setItem(event.id, JSON.stringify(event));
     const eventIdList = JSON.parse(this.eventStore.getItem(this.eventIndexKey)) as string[];
     eventIdList.push(event.id);
     this.eventStore.setItem(this.eventIndexKey, JSON.stringify(eventIdList));
   }
 
-  public fetchEvent (eventId: string): SourcedEvent {
-    return JSON.parse(this.eventStore.getItem(eventId)) as SourcedEvent;
+  public fetchEvent (eventId: string): DomainEvent {
+    return JSON.parse(this.eventStore.getItem(eventId)) as DomainEvent;
   }
 
-  public fetchEventList (): SourcedEvent[] {
+  public fetchEventList (): DomainEvent[] {
     const eventIdList = JSON.parse(this.eventStore.getItem(this.eventIndexKey));
-    return eventIdList.map((eventId: string) => JSON.parse(this.eventStore.getItem(eventId)) as SourcedEvent);
+    return eventIdList.map((eventId: string) => JSON.parse(this.eventStore.getItem(eventId)) as DomainEvent);
   }
 }

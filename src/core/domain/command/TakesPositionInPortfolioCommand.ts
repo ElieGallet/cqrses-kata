@@ -1,5 +1,5 @@
 import Command from "../../../infra/interface/Command";
-import DomainEvent from "../../../infra/interface/SourcedEvent";
+import DomainEvent from "../../../infra/interface/DomainEvent";
 import PositionTakenEvent from "../event/PositionTakenEvent";
 import PositionCoupledWithPortfolioEvent from "../event/PositionCoupledWithPortfolioEvent";
 

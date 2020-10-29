@@ -1,4 +1,4 @@
-import Query from "../../infra/interface/Query";
+import { Query } from "../../infra/types";
 
 export default class QueryService {
   

@@ -1,25 +1,25 @@
-import EventStoreAdapter from "../adapter/output/EventStoreAdapter";
-import CommandPublisher from "../emitter/CommandPublisher";
-import EventBus from "../bus/EventBus";
-import SourcedEvent from "../interface/SourcedEvent";
+import { EventEmitter } from "events";
+import PortfoliosAggregateRoot from "../../core/domain/aggregate/PortfoliosAggregateRoot";
+import { Command, Commands } from "../types";
+
 export default class CommandHandler {
 
-  private commandBus: CommandPublisher;
-  private eventBus: EventBus;
-  private eventStoreAdapter: EventStoreAdapter;
+  private emitter: EventEmitter;
+  private portfoliosAggregateRoot: PortfoliosAggregateRoot;
 
-  public constructor(commandBus: CommandPublisher, eventBus: EventBus, eventStoreAdapter: EventStoreAdapter) {
-    this.commandBus = commandBus;
-    this.eventBus = eventBus;
-    this.eventStoreAdapter = eventStoreAdapter;
+
+  public constructor(portfoliosAggregateRoot: PortfoliosAggregateRoot) {
+    this.emitter = new EventEmitter();
+    this.portfoliosAggregateRoot = PortfoliosAggregateRoot;
   }
 
-  public handle(): boolean{
-    const newEvents: SourcedEvent[] = this.commandBus.process();
-    newEvents.forEach((event: SourcedEvent) => {
-      this.eventBus.addEvent(event);
-      this.eventStoreAdapter.storeEvent(event);
-    });
-    return newEvents.length > 0;
+  public startListening(): void{
+    this.emitter.on(Commands[Commands.MOVE_POSITION_FROM_ONE_PORTFOLIO_TO_ANOTHER], (command) => {
+
+    })
+  }
+
+  public stopListening(): void{
+
   }
 }

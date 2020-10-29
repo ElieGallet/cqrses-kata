@@ -1,12 +1,10 @@
 const prompts = require('prompts');
 import PortfoliosAggregateRoot from './core/domain/aggregate/PortfoliosAggregateRoot';
 import { LocalStorage } from "node-localstorage";
-import CommandPublisher from './infra/bus/CommandBus';
-import EventBus from './infra/bus/EventBus';
+import CommandPublisher from './infra/publisher/CommandBus';
+import EventBus from './infra/publisher/EventBus';
 import UserInterfaceAdapter from './infra/adapter/input/UserInterfaceAdapter';
 import Queryhandler from './core/service/QueryService';
-import UserAction from "./infra/enum/UserAction";
-import CommandHandler from './infra/handler/CommandHandler';
 import EventStoreAdapter from './infra/adapter/output/EventStoreAdapter';
 import QueryDatabaseAdapter from './infra/adapter/output/QueryDatabaseAdapter';
 

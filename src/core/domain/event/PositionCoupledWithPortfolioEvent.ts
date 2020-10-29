@@ -1,7 +1,7 @@
-import SourcedEvent from "../../../infra/interface/SourcedEvent";
+import DomainEvent from "../../../infra/interface/DomainEvent";
 import {v4 as uuid} from 'uuid';
 
-export default class PositionAddedToPortfolioEvent implements SourcedEvent{
+export default class PositionAddedToPortfolioEvent implements DomainEvent{
 
   public readonly type: string = "POSITION_COUPLED_WITH_PORTFOLIO";
   public readonly timestamp: number = Date.now();
