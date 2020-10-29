@@ -1,5 +1,5 @@
 import EventStoreAdapter from "../adapter/output/EventStoreAdapter";
-import CommandPublisher from "../bus/CommandBus";
+import CommandPublisher from "../emitter/CommandPublisher";
 import EventBus from "../bus/EventBus";
 import SourcedEvent from "../interface/SourcedEvent";
 export default class CommandHandler {
