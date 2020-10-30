@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
-import { Command, Commands } from '../types';
+import { Command, Commands } from '../../types';
 
-export default class CommandPublisher {
+export default class CommandDispatcher {
 
   private emitter: EventEmitter;
 
@@ -9,7 +9,7 @@ export default class CommandPublisher {
     this.emitter = new EventEmitter();
   }
 
-  public publishCommand(command: Command): boolean {
+  public dispatchCommand(command: Command): boolean {
     return this.emitter.emit(Commands[command.type], command);
   }
 };

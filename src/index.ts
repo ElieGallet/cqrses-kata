@@ -1,23 +1,34 @@
 const prompts = require('prompts');
-import PortfoliosAggregateRoot from './core/domain/aggregate/PortfoliosAggregateRoot';
+import PortfoliosAggregateRoot from './core/domain/portfolios/aggregate/PortfoliosAggregateRoot';
 import { LocalStorage } from "node-localstorage";
-import CommandPublisher from './infra/publisher/CommandBus';
-import EventBus from './infra/publisher/EventBus';
+import DomainEventDispatcher from './infra/dispatcher/DomainEventDispatcher';
+import CommandDispatcher from './infra/dispatcher/CommandDispatcher';
 import UserInterfaceAdapter from './infra/adapter/input/UserInterfaceAdapter';
-import Queryhandler from './core/service/QueryService';
 import EventStoreAdapter from './infra/adapter/output/EventStoreAdapter';
-import QueryDatabaseAdapter from './infra/adapter/output/QueryDatabaseAdapter';
+import ProjectionDatabaseAdapter from './infra/adapter/output/ProjectionDatabaseAdapter';
+import CommandHandler from './infra/handler/CommandHandler';
+import { Commands } from './types';
+import Denormalizer from './infra/service/Denormalizer';
+import DomainEventRepository from './infra/service/DomainEventRepository';
+import QueryProcesser from './infra/service/QueryProcesser';
+import DomainEventHandler from './infra/handler/DomainEventHandler';
+
 
 const eventStore = new LocalStorage('./db/eventStore');
-const queryDatabase = new LocalStorage('./db/queryDatabase');
+const projectionDatabase = new LocalStorage('./db/queryDatabase');
 const eventStoreAdapter = new EventStoreAdapter(eventStore);
-const queryDatabaseAdapter = new QueryDatabaseAdapter(queryDatabase);
-const eventBus = new EventBus();
-const commandBus = new CommandPublisher();
-const commandHandler = new CommandHandler(commandBus, eventBus, eventStoreAdapter)
-const portfoliosAggregateRoot = new PortfoliosAggregateRoot();
-const queryhandler = new Queryhandler();
-const userInterfaceAdapter = new UserInterfaceAdapter(commandBus, queryhandler);
+const projectionDatabaseAdapter = new ProjectionDatabaseAdapter(projectionDatabase);
+const denormalizer = new Denormalizer(projectionDatabaseAdapter);
+const domainEventDispatcher = new DomainEventDispatcher();
+const domainEventRepository = new DomainEventRepository(eventStoreAdapter, domainEventDispatcher);
+const commandDispatcher = new CommandDispatcher();
+
+const portfoliosAggregateRoot = new PortfoliosAggregateRoot(domainEventRepository);
+const commandHandler = new CommandHandler(portfoliosAggregateRoot);
+const domainEventHandler = new DomainEventHandler(denormalizer);
+
+const queryProcesser = new QueryProcesser();
+const userInterfaceAdapter = new UserInterfaceAdapter(commandDispatcher, queryProcesser);
 
 console.log('Choose an action to do:');
 console.log('1: Take a position');
@@ -69,10 +80,13 @@ const run = async (): Promise<boolean> => {
 (async () => {
   let exit;
   try{
+    commandHandler.startListening();
+    domainEventHandler.startListening();
     while (!exit){
       exit = await run();
-      while (commandHandler.handle());
     }
+    domainEventHandler.stopListening()
+    commandHandler.stopListening();
     console.log('existing...');
     process.exit(0);
   } catch (e: any){
@@ -95,7 +109,7 @@ const takePositionInPortfolioStep = async () => {
     message: 'In which Portfolio?',
     validate: (value: string) => value === '' ? `cannot be empty` : true,
   });
-  userInterfaceAdapter.handleUserRequest(UserAction.TAKE_POSITION_IN_PORTFOLIO, {positionQuantity: positionInput.quantity, portfolioName: portfolioInput.name});
+  userInterfaceAdapter.handleUserRequest(Commands.TAKE_POSITION_IN_PORTFOLIO, {positionQuantity: positionInput.quantity, portfolioName: portfolioInput.name});
   console.log('position taken');
 }
 const movePositionFromPortfolioToAnother = async () => {
@@ -117,7 +131,7 @@ const movePositionFromPortfolioToAnother = async () => {
     message: 'To which Portfolio do you want to move this Position?',
     validate: (value: string) => value === '' ? `cannot be empty` : true,
   });
-  userInterfaceAdapter.handleUserRequest(UserAction.MOVE_POSITION_FROM_ONE_PORTFOLIO_TO_ANOTHER, {positionQuantity: position.quantity, portfolioSourceName: portfolioSource.name, portfolioDestinationName: portfolioDestination.name});
+  userInterfaceAdapter.handleUserRequest(Commands.MOVE_POSITION_FROM_ONE_PORTFOLIO_TO_ANOTHER, {positionQuantity: position.quantity, portfolioSourceName: portfolioSource.name, portfolioDestinationName: portfolioDestination.name});
   console.log('position moved');
   
 }

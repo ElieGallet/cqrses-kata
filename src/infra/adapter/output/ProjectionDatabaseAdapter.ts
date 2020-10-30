@@ -1,13 +1,13 @@
 import {v4 as uuid} from 'uuid';
 import { LocalStorage } from "node-localstorage";
 
-export default class QueryDatabaseAdapter {
+export default class ProjectionDatabaseAdapter {
 
   private readonly eventListId = uuid();
-  private queryDatabase: LocalStorage;
+  private projectionDatabase: LocalStorage;
 
-  public constructor(queryDatabase: LocalStorage){
-    this.queryDatabase = queryDatabase;
+  public constructor(projectionDatabase: LocalStorage){
+    this.projectionDatabase = projectionDatabase;
   }
 
   public read (): any {
